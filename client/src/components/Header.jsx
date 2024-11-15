@@ -5,12 +5,29 @@ import { HiMenu } from "react-icons/hi";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleTheme } from "../redux/theme/themeSlice";
 import { useSidebar } from "../contexts/SidebarContext";
+import { signoutSuccess } from "../redux/user/userSlice";
 
 function Header() {
   const { currentUser } = useSelector((state) => state.user);
   const { theme } = useSelector((state) => state.theme);
   const { toggleSidebar } = useSidebar();
   const dispatch = useDispatch();
+
+  const handleSignout = async () => {
+    try {
+      const res = await fetch("/api/user/signout", {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        console.log(data.message);
+      } else {
+        dispatch(signoutSuccess());
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   return (
     <Navbar className="border-b-2 flex justify-between">
@@ -58,7 +75,7 @@ function Header() {
                 <Dropdown.Item>Dashboard</Dropdown.Item>
               </Link>
               <Dropdown.Divider />
-              <Dropdown.Item>Sign out</Dropdown.Item>
+              <Dropdown.Item onClick={handleSignout}>Sign out</Dropdown.Item>
             </Dropdown>
             <Button className="md:hidden" color="gray" onClick={toggleSidebar}>
               <HiMenu className="w-5 h-5" />
