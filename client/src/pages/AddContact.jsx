@@ -1,4 +1,4 @@
-import { FileInput, Select, TextInput, Button, Alert } from "flowbite-react";
+import { Select, TextInput, Button, Alert } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
 import {
   getStorage,
@@ -10,7 +10,7 @@ import { app } from "../firebase";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 function AddContact() {
   const { currentUser, loading } = useSelector((state) => state.user);
@@ -21,7 +21,6 @@ function AddContact() {
   const [imageFileUploading, setImageFileUploading] = useState(false);
 
   const filePickerRef = useRef();
-  const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({});
   const [publishError, setPublishError] = useState(null);
@@ -30,7 +29,7 @@ function AddContact() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("/api/contact/add-contact", {
+      const res = await fetch("/api/contact/addcontact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
