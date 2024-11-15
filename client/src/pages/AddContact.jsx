@@ -28,11 +28,28 @@ function AddContact() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!formData.name || !formData.phone) {
+      setPublishError("Please provide all required fields.");
+      return;
+    }
+
+    const slug = formData.name
+      ? formData.name.toLowerCase().replace(/\s+/g, "-")
+      : new Date().getTime().toString();
+    const finalData = {
+      ...formData,
+      userId: currentUser._id,
+      slug: slug,
+      email: formData.email || "",
+      profilePicture: formData.profilePicture || "",
+    };
+
     try {
       const res = await fetch("/api/contact/addcontact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(finalData),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -99,7 +116,7 @@ function AddContact() {
 
   return (
     <div className="p-4 max-w-3xl mx-auto min-h-screen">
-      <h1 className="text-center text-3xl my-7 font-semibold">Add a Contact</h1>
+      <h1 className="text-center text-3xl my-7 font-semibold">Add Contact</h1>
       <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <input
           type="file"
