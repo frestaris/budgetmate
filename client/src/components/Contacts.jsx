@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Table } from "flowbite-react";
 import { Link } from "react-router-dom";
+import { CiGrid2H, CiGrid41 } from "react-icons/ci";
 
-function DashContacts() {
+function Contacts() {
   const { currentUser } = useSelector((state) => state.user);
   const [userContacts, setUserContacts] = useState([]);
   const [originalContacts, setOriginalContacts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [viewMode, setViewMode] = useState("column");
 
   const backgroundColors = [
     "bg-red-500",
@@ -56,85 +57,84 @@ function DashContacts() {
     return backgroundColors[randomIndex];
   };
 
+  const toggleViewMode = () => {
+    setViewMode((prevMode) => (prevMode === "grid" ? "column" : "grid"));
+  };
+
   return (
-    <div className="table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500 w-full">
+    <div className="p-4 w-full">
       <div className="flex justify-between items-center mb-4">
         <input
           type="text"
           placeholder="Search contacts..."
-          className="px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full sm:w-96 px-4 py-2 mr-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
-        <Link
-          to="/add-contact"
-          className="border border-cyan-500 text-cyan-500 px-4 py-2 rounded-lg hover:bg-cyan-100 hover:border-cyan-700 hover:text-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-        >
-          Add Contact
-        </Link>
+        <div className="flex items-center space-x-1">
+          <div
+            className="border-2 border-lg cursor-pointer px-4 py-2 rounded-lg shadow-sm bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 text-black dark:text-white  dark:hover:border-gray-500 "
+            onClick={toggleViewMode}
+          >
+            {viewMode === "grid" ? (
+              <CiGrid41 size={24} />
+            ) : (
+              <CiGrid2H size={24} />
+            )}
+          </div>
+
+          <Link
+            to="/add-contact"
+            className=" rounded-full border-2 px-4 py-2 shadow-sm bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 "
+          >
+            <span className="text-xl">+</span>
+          </Link>
+        </div>
       </div>
+
       {userContacts.length > 0 ? (
-        <Table className="shadow-md">
-          <Table.Head>
-            <Table.HeadCell>Picture</Table.HeadCell>
-            <Table.HeadCell>Name</Table.HeadCell>
-            <Table.HeadCell>Email</Table.HeadCell>
-            <Table.HeadCell>Phone</Table.HeadCell>
-            <Table.HeadCell>Relationship</Table.HeadCell>
-            <Table.HeadCell>Delete</Table.HeadCell>
-            <Table.HeadCell>Edit</Table.HeadCell>
-          </Table.Head>
-          <Table.Body className="divide-y">
-            {userContacts.map((contact) => (
-              <Table.Row
-                className="bg-white dark:border-gray-700 dark:bg-gray-800"
-                key={contact._id}
+        <div
+          className={`${
+            viewMode === "grid"
+              ? "grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-x-2"
+              : "flex flex-col"
+          }`}
+        >
+          {userContacts.map((contact) => (
+            <Link key={contact._id} to={`/contact/${contact.slug}`}>
+              <div
+                className={`${
+                  viewMode === "grid" ? "flex md:flex-row flex-col" : "flex "
+                } items-center justify-between p-4 border rounded-lg shadow-sm bg-white dark:bg-gray-800 dark:border-gray-700 mb-2 hover:bg-gray-100 dark:hover:bg-gray-700`}
               >
-                <Table.Cell>
+                <div className="flex items-center space-x-4">
                   {contact.profilePicture ? (
                     <img
                       src={contact.profilePicture}
                       alt={contact.name}
-                      className="w-10 h-10 object-cover bg-gray-500 rounded-full"
+                      className="w-8 h-8 object-cover bg-gray-500 rounded-full"
                     />
                   ) : (
                     <div
-                      className={`w-10 h-10 flex items-center justify-center text-white font-semibold rounded-full ${getRandomBackgroundColor()}`}
+                      className={`w-8 h-8 flex items-center justify-center text-white font-semibold rounded-full ${getRandomBackgroundColor()}`}
                     >
                       {contact.name.charAt(0).toUpperCase()}
                     </div>
                   )}
-                </Table.Cell>
-                <Table.Cell>
-                  <Link
-                    to={`/contact/${contact.slug}`}
-                    className="text-blue-500 hover:text-blue-700 hover:underline cursor-pointer"
-                  >
+                  <span className="truncate w-[80px]">
                     {contact.name.charAt(0).toUpperCase() +
                       contact.name.slice(1).toLowerCase()}
-                  </Link>
-                </Table.Cell>
-
-                <Table.Cell>{contact.email}</Table.Cell>
-                <Table.Cell>{contact.phone}</Table.Cell>
-                <Table.Cell>{contact.relationship}</Table.Cell>
-                <Table.Cell>
-                  <span className="font-medium text-red-500 hover:underline cursor-pointer">
-                    Delete
                   </span>
-                </Table.Cell>
-                <Table.Cell>
-                  <Link
-                    className="text-teal-500 hover:underline"
-                    to={`/update-contact/${contact._id}`}
-                  >
-                    Edit
-                  </Link>
-                </Table.Cell>
-              </Table.Row>
-            ))}
-          </Table.Body>
-        </Table>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="truncate w-[100px] text-gray-700 dark:text-gray-300">
+                    +{contact.phone}
+                  </span>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
       ) : (
         <p>You have no contacts yet!</p>
       )}
@@ -142,4 +142,4 @@ function DashContacts() {
   );
 }
 
-export default DashContacts;
+export default Contacts;

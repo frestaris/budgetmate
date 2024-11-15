@@ -30,9 +30,6 @@ export const add = async (req, res, next) => {
 
 export const getContacts = async (req, res, next) => {
   try {
-    const startIndex = parseInt(req.query.startIndex) || 0;
-    const sortDirection = req.query.order === "asc" ? 1 : -1;
-
     const query = {
       ...(req.query.userId && { userId: req.query.userId }),
       ...(req.query.friendship && { friendship: req.query.friendship }),
@@ -47,9 +44,7 @@ export const getContacts = async (req, res, next) => {
       }),
     };
 
-    const contacts = await Contact.find(query)
-      .sort({ updatedAt: sortDirection })
-      .skip(startIndex);
+    const contacts = await Contact.find(query).sort({ name: 1 });
 
     res.status(200).json({
       contacts,

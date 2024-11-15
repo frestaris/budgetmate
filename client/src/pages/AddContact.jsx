@@ -11,8 +11,11 @@ import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 function AddContact() {
+  const { theme } = useSelector((state) => state.theme);
   const { currentUser, loading } = useSelector((state) => state.user);
   const [imageFile, setImageFile] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
@@ -21,7 +24,11 @@ function AddContact() {
   const [imageFileUploading, setImageFileUploading] = useState(false);
 
   const filePickerRef = useRef();
+  const [phone, setPhone] = useState("");
 
+  const handlePhoneChange = (value) => {
+    setPhone(value);
+  };
   const [formData, setFormData] = useState({});
   const [publishError, setPublishError] = useState(null);
   const navigate = useNavigate();
@@ -179,12 +186,42 @@ function AddContact() {
           className="flex-1"
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
         />
-        <TextInput
-          type="text"
+        <PhoneInput
+          className={`${
+            theme === "dark"
+              ? "dark:text-gray-200 dark:bg-[rgb(16,23,42)]"
+              : "text-gray-700 bg-white"
+          }`}
+          country={"au"}
+          value={phone}
+          onChange={(value) => {
+            handlePhoneChange(value);
+            setFormData({ ...formData, phone: value });
+          }}
           placeholder="Phone"
           id="phone"
           required
-          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+          inputStyle={{
+            width: "100%",
+            height: "2.5rem",
+            borderRadius: "0.375rem",
+            padding: "0.5rem 0.75rem",
+            fontSize: "1rem",
+            outline: "none",
+            paddingLeft: "2.75rem",
+            color: theme === "dark" ? "rgb(226, 232, 240)" : "rgb(55, 65, 81)",
+            backgroundColor:
+              theme === "dark" ? "rgb(55, 65, 81)" : "rgb(255, 255, 255)",
+          }}
+          containerStyle={{
+            position: "relative",
+            width: "100%",
+            display: "flex",
+          }}
+          enableSearch
+          dropdownStyle={{
+            color: "rgb(55, 65, 81)",
+          }}
         />
         <Select
           id="relationship"
