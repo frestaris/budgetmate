@@ -2,15 +2,22 @@ import mongoose from "mongoose";
 
 const contactSchema = new mongoose.Schema(
   {
-    user_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+    userId: {
+      type: String,
       required: true,
     },
     name: { type: String, required: true },
     email: String,
     phone: String,
-    address: String,
+    relationship: {
+      type: String,
+      default: "friend",
+    },
+    profilePicture: {
+      type: String,
+      default: null,
+    },
+    slug: { type: String, required: true, unique: true },
   },
   { timestamps: true }
 );
