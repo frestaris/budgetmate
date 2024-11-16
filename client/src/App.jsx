@@ -10,6 +10,7 @@ import AddContact from "./pages/AddContact";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import { SidebarProvider } from "./contexts/SidebarContext";
+import Contact from "./pages/Contact";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route element={<PrivateRoute />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/add-contact" element={<AddContact />} />
+            <Route path="/contact/:contactSlug" element={<Contact />} />
           </Route>
         </Routes>
       </SidebarProvider>

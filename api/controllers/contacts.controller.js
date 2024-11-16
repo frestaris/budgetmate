@@ -54,3 +54,34 @@ export const getContacts = async (req, res, next) => {
     next(error);
   }
 };
+
+export const updateContact = async (req, res, next) => {
+  const { contactId } = req.params; // Get the contactId from the URL
+  const updatedData = req.body; // Get the data to update from the request body
+
+  try {
+    // Find the contact by its ID
+    const contact = await Contact.findById(contactId);
+
+    if (!contact) {
+      return next(errorHandler(404, "Contact not found"));
+    }
+
+    // Ensure the current user is the owner of the contact
+    if (contact.userId.toString() !== req.user.id) {
+      return next(
+        errorHandler(403, "You are not allowed to update this contact")
+      );
+    }
+
+    // Update the contact with the new data
+    Object.assign(contact, updatedData); // Merge updated data into the existing contact
+
+    const updatedContact = await contact.save(); // Save the updated contact
+
+    res.status(200).json(updatedContact);
+  } catch (error) {
+    console.error("Error updating contact:", error);
+    next(error);
+  }
+};
