@@ -67,7 +67,7 @@ function Contacts() {
         <input
           type="text"
           placeholder="Search contacts..."
-          className="w-full sm:w-96 px-4 py-2 mr-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+          className="dark:text-black w-full sm:w-96 px-4 py-2 mr-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
@@ -127,7 +127,7 @@ function Contacts() {
                   </span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <span className="truncate w-[100px] text-gray-700 dark:text-gray-300">
+                  <span className="truncate w-[80px] text-gray-700 dark:text-gray-300">
                     +{contact.phone}
                   </span>
                 </div>

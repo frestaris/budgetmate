@@ -1,6 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
-import { Alert, Button, Select, TextInput } from "flowbite-react";
+import {
+  Alert,
+  Button,
+  Modal,
+  Select,
+  Spinner,
+  TextInput,
+} from "flowbite-react";
 import {
   getStorage,
   ref,
@@ -15,6 +22,7 @@ import "react-circular-progressbar/dist/styles.css";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { toast } from "react-toastify";
+import { HiOutlineExclamationCircle } from "react-icons/hi";
 
 function Contact() {
   const { theme } = useSelector((state) => state.theme);
@@ -27,6 +35,7 @@ function Contact() {
   const [imageFile, setImageFile] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const [imageFileUploadProgress, setImageFileUploadProgress] = useState(null);
+  const [showModal, setShowModal] = useState(false);
   const [imageFileUploadError, setImageFileUploadError] = useState(null);
   const [imageFileUploading, setImageFileUploading] = useState(false);
   const [phone, setPhone] = useState("");
@@ -170,7 +179,7 @@ function Contact() {
       if (res.ok) {
         toast.success("Contact updated successfully!");
         setPublishError(null);
-        navigate(`/contact/${data.slug}`);
+        navigate(`/dashboard?tab=contacts`);
       } else {
         setPublishError(data.message || "Error updating contact");
       }
@@ -182,8 +191,38 @@ function Contact() {
     }
   };
 
+  const handleDeleteContact = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/contact/deletecontact/${contact._id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        toast.success("Contact deleted successfully!");
+        navigate("/dashboard?tab=contacts");
+      } else {
+        throw new Error("Failed to delete contact");
+      }
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (loading) {
-    return <p>Loading contact...</p>;
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <Spinner className="size-24" />
+      </div>
+    );
   }
 
   if (error) {
@@ -246,7 +285,7 @@ function Contact() {
         )}
         <TextInput
           type="text"
-          value={formData.name || ""}
+          value={formData.name}
           placeholder="Name"
           required
           id="name"
@@ -258,7 +297,7 @@ function Contact() {
           placeholder="Email"
           id="email"
           className="flex-1"
-          value={formData.email || ""}
+          value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
         />
         <PhoneInput
@@ -268,7 +307,7 @@ function Contact() {
               : "text-gray-700 bg-white"
           }`}
           country={"au"}
-          value={phone || formData.phone || ""}
+          value={formData.phone}
           onChange={(value) => {
             handlePhoneChange(value);
             setFormData({ ...formData, phone: value });
@@ -300,7 +339,7 @@ function Contact() {
         />
         <Select
           id="relationship"
-          value={formData.relationship || "friend"}
+          value={formData.relationship}
           onChange={(e) =>
             setFormData({ ...formData, relationship: e.target.value })
           }
@@ -313,10 +352,49 @@ function Contact() {
           <option value="grandparent">Grandparent</option>
         </Select>
 
-        <Button type="submit" gradientDuoTone="cyanToBlue" disabled={loading}>
-          {loading ? "Saving..." : "Save Changes"}
+        <Button
+          type="submit"
+          outline
+          gradientDuoTone="cyanToBlue"
+          disabled={loading}
+        >
+          {loading ? <Spinner /> : "Update"}
         </Button>
       </form>
+      <Button
+        type="submit"
+        color="failure"
+        className="w-full mt-2"
+        onClick={() => {
+          setShowModal(true);
+        }}
+      >
+        Delete Account
+      </Button>
+      <Modal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        popup
+        size="md"
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className="text-center">
+            <HiOutlineExclamationCircle className="h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto" />
+            <h3 className="mb-5 text-lg text-gray-500 dark:text-gray-400">
+              Are you sure you want to delete your account?
+            </h3>
+            <div className="flex justify-center gap-4">
+              <Button color="failure" onClick={handleDeleteContact}>
+                Yes, I'm sure
+              </Button>
+              <Button color="gray" onClick={() => setShowModal(false)}>
+                No, cancel
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
       {publishError && (
         <Alert color="failure" className="mt-2">
           {publishError}

@@ -8,10 +8,28 @@ import { signoutSuccess } from "../redux/user/userSlice";
 
 function DashSidebar() {
   const { showSidebar, closeSidebar } = useSidebar();
+  const [contacts, setContacts] = useState([]);
   const location = useLocation();
   const { currentUser } = useSelector((state) => state.user);
   const [tab, setTab] = useState("");
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const fetchContacts = async () => {
+      try {
+        const res = await fetch(
+          `/api/contact/getcontacts?userId=${currentUser._id}`
+        );
+        const data = await res.json();
+        if (res.ok && data.contacts) {
+          setContacts(data.contacts);
+        }
+      } catch (error) {
+        console.log("Error fetching contacts:", error);
+      }
+    };
+    fetchContacts();
+  }, [currentUser._id]);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -70,7 +88,12 @@ function DashSidebar() {
               </Sidebar.Item>
             </Link>
             <Link to="/dashboard?tab=contacts" onClick={closeSidebar}>
-              <Sidebar.Item active={tab === "contacts"} icon={HiUsers} as="div">
+              <Sidebar.Item
+                label={contacts.length}
+                active={tab === "contacts"}
+                icon={HiUsers}
+                as="div"
+              >
                 Contacts
               </Sidebar.Item>
             </Link>

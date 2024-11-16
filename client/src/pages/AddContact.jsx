@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import { toast } from "react-toastify";
 
 function AddContact() {
   const { theme } = useSelector((state) => state.theme);
@@ -67,7 +68,8 @@ function AddContact() {
       }
       if (res.ok) {
         setPublishError(null);
-        navigate(`/contact/${data.slug}`);
+        toast.success("Contact added!");
+        navigate("/dashboard?tab=contacts");
       }
     } catch (error) {
       console.log(error);

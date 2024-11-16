@@ -1,8 +1,9 @@
 import { errorHandler } from "../utils/error.js";
 import Contact from "../models/contact.model.js";
 
+import User from "../models/user.model.js";
+
 export const add = async (req, res, next) => {
-  console.log(req.body);
   if (!req.user) {
     return next(errorHandler(403, "You are not allowed to add a contact"));
   }
@@ -21,6 +22,14 @@ export const add = async (req, res, next) => {
   });
   try {
     const savedContact = await newContact.save();
+    const user = await User.findById(req.user.id);
+    if (user) {
+      user.contacts.push({
+        contact_id: savedContact._id,
+        relationship: req.body.relationship || "friend",
+      });
+      await user.save();
+    }
     res.status(201).json(savedContact);
   } catch (error) {
     console.error("Error saving contact:", error);
@@ -56,32 +65,63 @@ export const getContacts = async (req, res, next) => {
 };
 
 export const updateContact = async (req, res, next) => {
-  const { contactId } = req.params; // Get the contactId from the URL
-  const updatedData = req.body; // Get the data to update from the request body
+  const { contactId } = req.params;
+  const updatedData = req.body;
 
   try {
-    // Find the contact by its ID
     const contact = await Contact.findById(contactId);
-
     if (!contact) {
       return next(errorHandler(404, "Contact not found"));
     }
 
-    // Ensure the current user is the owner of the contact
     if (contact.userId.toString() !== req.user.id) {
       return next(
         errorHandler(403, "You are not allowed to update this contact")
       );
     }
 
-    // Update the contact with the new data
-    Object.assign(contact, updatedData); // Merge updated data into the existing contact
+    const updateFields = {};
 
-    const updatedContact = await contact.save(); // Save the updated contact
+    if (updatedData.name) updateFields.name = updatedData.name;
+    if (updatedData.email) updateFields.email = updatedData.email;
+    if (updatedData.profilePicture)
+      updateFields.profilePicture = updatedData.profilePicture;
+    if (updatedData.phone) updateFields.phone = updatedData.phone;
+    if (updatedData.relationship)
+      updateFields.relationship = updatedData.relationship;
 
-    res.status(200).json(updatedContact);
+    const updatedContact = await Contact.findByIdAndUpdate(
+      contactId,
+      { $set: updateFields },
+      { new: true }
+    );
+
+    const { phone, ...rest } = updatedContact._doc;
+    res
+      .status(200)
+      .json({ message: "Contact updated successfully", contact: rest });
   } catch (error) {
     console.error("Error updating contact:", error);
     next(error);
+  }
+};
+
+export const deleteContact = async (req, res, next) => {
+  try {
+    const { contactId } = req.params;
+
+    const contact = await Contact.findById(contactId);
+    if (!contact) {
+      console.log("Contact not found");
+      return res.status(404).json({ message: "Contact not found" });
+    }
+    if (contact.userId.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Unauthorized access" });
+    }
+    await contact.deleteOne();
+    res.status(200).json({ message: "Contact deleted successfully" });
+  } catch (error) {
+    console.error("Error in deletecontact:", error.message, error.stack);
+    res.status(500).json({ message: "Server error: " + error.message });
   }
 };
