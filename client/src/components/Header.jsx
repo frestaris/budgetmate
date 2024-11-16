@@ -1,5 +1,5 @@
 import { Button, Navbar, Avatar, Dropdown } from "flowbite-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { FaMoon, FaSun } from "react-icons/fa";
 import { HiMenu } from "react-icons/hi";
 import { useSelector, useDispatch } from "react-redux";
@@ -12,6 +12,9 @@ function Header() {
   const { theme } = useSelector((state) => state.theme);
   const { toggleSidebar } = useSidebar();
   const dispatch = useDispatch();
+  const location = useLocation();
+
+  const isDashboardPage = location.pathname === "/dashboard";
 
   const handleSignout = async () => {
     try {
@@ -77,9 +80,15 @@ function Header() {
               <Dropdown.Divider />
               <Dropdown.Item onClick={handleSignout}>Sign out</Dropdown.Item>
             </Dropdown>
-            <Button className="md:hidden" color="gray" onClick={toggleSidebar}>
-              <HiMenu className="w-5 h-5" />
-            </Button>
+            {isDashboardPage && (
+              <Button
+                className="md:hidden"
+                color="gray"
+                onClick={toggleSidebar}
+              >
+                <HiMenu className="w-5 h-5" />
+              </Button>
+            )}
           </>
         ) : (
           <Link to="/sign-in">

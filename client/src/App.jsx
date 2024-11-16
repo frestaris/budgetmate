@@ -17,8 +17,8 @@ function App() {
     <BrowserRouter
       future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
     >
+      <ToastContainer position="top-center" autoClose={2000} />
       <SidebarProvider>
-        <ToastContainer position="top-center" autoClose={2000} />
         <Header />
         <Routes>
           <Route path="/" element={<Home />} />

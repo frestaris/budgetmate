@@ -234,7 +234,9 @@ function Contact() {
       <Button onClick={() => navigate(-1)} className="rounded-full shadow-md">
         &#8592; Back
       </Button>
-      <h1 className="text-center text-3xl my-7 font-semibold">Edit Contact</h1>
+      <h1 className="text-center text-3xl my-7 font-semibold">
+        {formData.name}
+      </h1>
       <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <input
           type="file"
