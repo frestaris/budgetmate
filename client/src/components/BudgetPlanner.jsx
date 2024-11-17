@@ -327,9 +327,18 @@ function BudgetPlanner() {
             <span>TOTAL</span>
           </div>
           <div className="flex items-center gap-2">
-            <span>
-              $ {formattedAmount(getTotalByFrequency(totalFrequency))}
+            <span
+              className={
+                getTotalByFrequency(totalFrequency) > 0
+                  ? "text-green-500"
+                  : "text-red-500"
+              }
+            >
+              <strong>
+                $ {formattedAmount(getTotalByFrequency(totalFrequency))}
+              </strong>
             </span>
+
             <Select
               id="totalFrequency"
               value={totalFrequency}

@@ -180,7 +180,7 @@ function AddContact() {
         )}
         <TextInput
           type="text"
-          placeholder="Name"
+          placeholder="Name (required)"
           required
           id="name"
           className="flex-1"
@@ -199,13 +199,12 @@ function AddContact() {
               ? "dark:text-gray-200 dark:bg-[rgb(16,23,42)]"
               : "text-gray-700 bg-white"
           }`}
-          country={"au"}
           value={phone}
           onChange={(value) => {
             handlePhoneChange(value);
             setFormData({ ...formData, phone: value });
           }}
-          placeholder="Phone"
+          placeholder="Phone (required)"
           id="phone"
           required
           inputStyle={{

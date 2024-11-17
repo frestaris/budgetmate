@@ -149,7 +149,7 @@ function Contacts() {
                 </div>
                 <div className="flex items-center space-x-2">
                   <span className="truncate w-[80px] text-gray-700 dark:text-gray-300">
-                    {contact.phone}
+                    +{contact.phone}
                   </span>
                 </div>
               </div>
@@ -157,7 +157,7 @@ function Contacts() {
           ))}
         </div>
       ) : (
-        <p>You have no contacts yet!</p>
+        <p>Nothing to see here!</p>
       )}
     </div>
   );
