@@ -7,16 +7,16 @@ const userSchema = new mongoose.Schema(
     password: { type: String, required: true },
     contacts: [
       {
-        contact_id: { type: mongoose.Schema.Types.ObjectId, ref: "Contact" },
-        relationship: { type: String },
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Contact",
       },
     ],
+    budgets: [{ type: mongoose.Schema.Types.ObjectId, ref: "Budget" }],
     profilePicture: {
       type: String,
       default:
         "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
     },
-    budgets: [{ type: mongoose.Schema.Types.ObjectId, ref: "Budget" }],
   },
   { timestamps: true }
 );

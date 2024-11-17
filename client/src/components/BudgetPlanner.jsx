@@ -124,8 +124,6 @@ function BudgetPlanner() {
       try {
         const res = await fetch("/api/budgets/getbudgets");
         const data = await res.json();
-        console.log(currentUser._id);
-        console.log(data.budgets);
 
         if (res.ok && data.budgets) {
           setUserBudgets(data.budgets);
