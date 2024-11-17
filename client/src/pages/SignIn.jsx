@@ -18,6 +18,9 @@ function SignIn() {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
+    if (errorMessage) {
+      dispatch(signInFailure(null));
+    }
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -67,7 +70,7 @@ function SignIn() {
               <Label value="Your email" />
               <TextInput
                 type="email"
-                placeholder="name@email.com"
+                placeholder="test@gmail.com for testing"
                 id="email"
                 onChange={handleChange}
               />
@@ -76,7 +79,7 @@ function SignIn() {
               <Label value="Your password" />
               <TextInput
                 type="password"
-                placeholder="********"
+                placeholder="123456"
                 id="password"
                 onChange={handleChange}
               />
