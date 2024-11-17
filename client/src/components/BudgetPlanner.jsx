@@ -282,7 +282,7 @@ function BudgetPlanner() {
                 <span>
                   {formattedAmount(
                     getTotalByCategory(category.name.toLowerCase())
-                  )}
+                  )}{" "}
                   $
                 </span>
 
@@ -307,7 +307,7 @@ function BudgetPlanner() {
                         </div>
                         <div className="flex items-center gap-2">
                           <p>
-                            ${formattedAmount(item.amount)} ({item.frequency})
+                            $ {formattedAmount(item.amount)} ({item.frequency})
                           </p>
                           <FaRegTrashAlt
                             color="red"
@@ -327,7 +327,9 @@ function BudgetPlanner() {
             <span>TOTAL</span>
           </div>
           <div className="flex items-center gap-2">
-            <span>${formattedAmount(getTotalByFrequency(totalFrequency))}</span>
+            <span>
+              $ {formattedAmount(getTotalByFrequency(totalFrequency))}
+            </span>
             <Select
               id="totalFrequency"
               value={totalFrequency}
