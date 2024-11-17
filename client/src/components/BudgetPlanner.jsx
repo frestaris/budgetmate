@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FaHandHoldingUsd,
   FaHome,
@@ -13,8 +13,15 @@ import { AiFillSafetyCertificate } from "react-icons/ai";
 import { MdLocalGroceryStore } from "react-icons/md";
 import { Button, Select, TextInput } from "flowbite-react";
 
+import { toast } from "react-toastify";
+
 function BudgetPlanner() {
   const [openPanels, setOpenPanels] = useState([]);
+  const [description, setDescription] = useState("");
+  const [amount, setAmount] = useState("");
+  const [category, setCategory] = useState("");
+  const [frequency, setFrequency] = useState("");
+  const [budgetItems, setBudgetItems] = useState([]);
 
   const categories = [
     { name: "Income", icon: <FaHandHoldingUsd className="w-6 h-6" /> },
@@ -39,21 +46,120 @@ function BudgetPlanner() {
     });
   };
 
+  useEffect(() => {
+    getBudgets();
+  }, []);
+
+  const getBudgets = async () => {
+    try {
+      const response = await fetch("/api/budgets/getbudgets");
+      const data = await response.json();
+      if (response.ok) {
+        setBudgetItems(data.budgets);
+      } else {
+        alert(`Error: ${data.message}`);
+      }
+    } catch (error) {
+      console.error("Error fetching budgets:", error);
+      alert("Error fetching budgets. Please try again.");
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!description || !amount || !category || !frequency) {
+      alert("Please fill all fields.");
+      return;
+    }
+
+    const budgetData = {
+      description,
+      amount,
+      category,
+      frequency,
+    };
+
+    try {
+      const response = await fetch("/api/budgets/addbudget", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(budgetData),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        toast.success("Budget item added successfully!");
+        setBudgetItems((prevItems) => [
+          ...prevItems,
+          { ...budgetData, id: data.id },
+        ]);
+        setDescription("");
+        setAmount("");
+        setCategory("");
+        setFrequency("");
+      } else {
+        alert(`Error: ${data.message}`);
+      }
+    } catch (error) {
+      console.error("Error submitting budget:", error);
+      alert("Error submitting budget. Please try again.");
+    }
+  };
+
+  const handleDelete = async (budgetId) => {
+    try {
+      const response = await fetch(`/api/budgets/deletebudget/${budgetId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success("Budget Deleted");
+        setBudgetItems(data.budgets);
+      } else {
+        alert(`Error: ${data.message}`);
+      }
+    } catch (error) {
+      console.error("Error deleting budget:", error);
+      alert("Error deleting budget. Please try again.");
+    }
+  };
+
   return (
     <div className="w-full p-4 space-y-5">
-      <form className="space-y-4 mb-3">
+      <form className="space-y-4 mb-3" onSubmit={handleSubmit}>
         <div className="flex flex-col sm:flex-row w-full gap-2">
-          <TextInput placeholder="Description..." required className="w-full" />
+          <TextInput
+            placeholder="Description..."
+            required
+            className="w-full"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
           <TextInput
             placeholder="Amount..."
             required
             type="number"
             className="w-full"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
           />
         </div>
         <div className="flex flex-col sm:flex-row justify-between gap-2">
-          <Select id="category" className="w-full">
-            <option value="" disabled selected>
+          <Select
+            id="category"
+            className="w-full"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
+            <option value="" disabled>
               Select Category
             </option>
             {categories.map((category, index) => (
@@ -63,8 +169,13 @@ function BudgetPlanner() {
             ))}
           </Select>
 
-          <Select id="frequency" className="w-full">
-            <option value="" disabled selected>
+          <Select
+            id="frequency"
+            className="w-full"
+            value={frequency}
+            onChange={(e) => setFrequency(e.target.value)}
+          >
+            <option value="" disabled>
               Select Frequency
             </option>
             <option value="weekly">Weekly</option>
@@ -74,7 +185,7 @@ function BudgetPlanner() {
           </Select>
         </div>
 
-        <Button gradientDuoTone="cyanToBlue" className="w-full">
+        <Button gradientDuoTone="cyanToBlue" className="w-full" type="submit">
           Add Budget Item
         </Button>
       </form>
@@ -103,16 +214,26 @@ function BudgetPlanner() {
             {openPanels.includes(index) && (
               <div className="p-4">
                 <ul>
-                  <li className="flex justify-between">
-                    <div>
-                      <p>item 1</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <p>0.00$</p>
-                      <p>(frequency)</p>
-                      <FaRegTrashAlt color="red" className="cursor-pointer" />
-                    </div>
-                  </li>
+                  {budgetItems
+                    .filter(
+                      (item) => item.category === category.name.toLowerCase()
+                    )
+                    .map((item, idx) => (
+                      <li key={idx} className="flex justify-between">
+                        <div>
+                          <p>{item.description}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <p>{item.amount}$</p>
+                          <p>({item.frequency})</p>
+                          <FaRegTrashAlt
+                            color="red"
+                            className="cursor-pointer"
+                            onClick={() => handleDelete(item._id)}
+                          />
+                        </div>
+                      </li>
+                    ))}
                 </ul>
               </div>
             )}
