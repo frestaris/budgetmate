@@ -347,11 +347,10 @@ function Contact() {
           }
         >
           <option value="friend">Friend</option>
-          <option value="father">Father</option>
-          <option value="mother">Mother</option>
-          <option value="sibling">Sibling</option>
-          <option value="cousin">Cousin</option>
-          <option value="grandparent">Grandparent</option>
+          <option value="relative">Relative</option>
+          <option value="spouse">Spouse</option>
+          <option value="colleague">Colleague</option>
+          <option value="business">Business</option>
         </Select>
 
         <Button

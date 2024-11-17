@@ -38,7 +38,7 @@ export const getContacts = async (req, res, next) => {
   try {
     const query = {
       ...(req.query.userId && { userId: req.query.userId }),
-      ...(req.query.friendship && { friendship: req.query.friendship }),
+      ...(req.query.relationship && { relationship: req.query.relationship }),
       ...(req.query.slug && { slug: req.query.slug }),
       ...(req.query.contactId && { _id: req.query.contactId }),
       ...(req.query.searchTerm && {

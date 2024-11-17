@@ -6,6 +6,7 @@ import {
   HiUsers,
   HiCurrencyDollar,
 } from "react-icons/hi";
+import { RiContactsBook3Fill } from "react-icons/ri";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { useSidebar } from "../contexts/SidebarContext";
@@ -98,7 +99,7 @@ function DashSidebar() {
                 className="mb-1"
                 label={contacts.length}
                 active={tab === "contacts"}
-                icon={HiUsers}
+                icon={RiContactsBook3Fill}
                 as="div"
               >
                 Contacts

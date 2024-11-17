@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { CiGrid2H, CiGrid41 } from "react-icons/ci";
+import { Spinner } from "flowbite-react";
 
 function Contacts() {
   const { currentUser } = useSelector((state) => state.user);
@@ -9,6 +10,7 @@ function Contacts() {
   const [originalContacts, setOriginalContacts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState("column");
+  const [loading, setLoading] = useState(true);
 
   const backgroundColors = [
     "bg-red-500",
@@ -21,6 +23,7 @@ function Contacts() {
 
   useEffect(() => {
     const fetchContacts = async () => {
+      setLoading(true);
       try {
         const res = await fetch(
           `/api/contact/getcontacts?userId=${currentUser._id}`
@@ -30,7 +33,9 @@ function Contacts() {
           setUserContacts(data.contacts);
           setOriginalContacts(data.contacts);
         }
+        setLoading(false);
       } catch (error) {
+        setLoading(false);
         console.log("Error fetching contacts:", error);
       }
     };
@@ -60,6 +65,22 @@ function Contacts() {
   const toggleViewMode = () => {
     setViewMode((prevMode) => (prevMode === "grid" ? "column" : "grid"));
   };
+
+  if (loading) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          width: "100%",
+        }}
+      >
+        <Spinner className="size-24" />
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 w-full">
