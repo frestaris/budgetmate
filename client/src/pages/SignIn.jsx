@@ -43,7 +43,7 @@ function SignIn() {
       if (res.ok) {
         toast.success("User logged in!");
         dispatch(signInSuccess(data));
-        navigate("/");
+        navigate("/dashboard?tab=profile");
       }
     } catch (error) {
       dispatch(signInFailure(error.message));
