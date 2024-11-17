@@ -1,5 +1,11 @@
 import { Sidebar } from "flowbite-react";
-import { HiArrowSmRight, HiUser, HiChartPie, HiUsers } from "react-icons/hi";
+import {
+  HiArrowSmRight,
+  HiUser,
+  HiChartPie,
+  HiUsers,
+  HiCurrencyDollar,
+} from "react-icons/hi";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { useSidebar } from "../contexts/SidebarContext";
@@ -89,12 +95,22 @@ function DashSidebar() {
             </Link>
             <Link to="/dashboard?tab=contacts" onClick={closeSidebar}>
               <Sidebar.Item
+                className="mb-1"
                 label={contacts.length}
                 active={tab === "contacts"}
                 icon={HiUsers}
                 as="div"
               >
                 Contacts
+              </Sidebar.Item>
+            </Link>
+            <Link to="/dashboard?tab=budgetPlanner" onClick={closeSidebar}>
+              <Sidebar.Item
+                active={tab === "budgetPlanner"}
+                icon={HiCurrencyDollar}
+                as="div"
+              >
+                Budget Planner
               </Sidebar.Item>
             </Link>
             <hr />

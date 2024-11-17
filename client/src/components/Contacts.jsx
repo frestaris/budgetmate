@@ -121,14 +121,14 @@ function Contacts() {
                       {contact.name.charAt(0).toUpperCase()}
                     </div>
                   )}
-                  <span className="truncate w-[80px]">
+                  <span className="truncate w-[80px] text-gray-900 dark:text-gray-300">
                     {contact.name.charAt(0).toUpperCase() +
                       contact.name.slice(1).toLowerCase()}
                   </span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <span className="truncate w-[80px] text-gray-700 dark:text-gray-300">
-                    +{contact.phone}
+                    {contact.phone}
                   </span>
                 </div>
               </div>
