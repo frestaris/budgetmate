@@ -132,7 +132,7 @@ const DashStats = () => {
               totalAmount >= 0 ? "text-green-500" : "text-red-500"
             }`}
           >
-            ${formattedAmount(totalAmount.toFixed(2))}
+            ${formattedAmount(totalAmount.toFixed(2))} p/a
           </p>
         </div>
 
