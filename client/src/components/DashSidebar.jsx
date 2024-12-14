@@ -11,6 +11,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useSidebar } from "../contexts/SidebarContext";
 import { useEffect, useState } from "react";
 import { signoutSuccess } from "../redux/user/userSlice";
+import { getBaseUrl } from "../utils/baseUrl";
 
 function DashSidebar() {
   const { showSidebar, closeSidebar } = useSidebar();
@@ -24,7 +25,8 @@ function DashSidebar() {
     const fetchContacts = async () => {
       try {
         const res = await fetch(
-          `/api/contact/getcontacts?userId=${currentUser._id}`
+          `${getBaseUrl()}/api/contact/getcontacts?userId=${currentUser._id}`,
+          { credentials: "include" }
         );
         const data = await res.json();
         if (res.ok && data.contacts) {
@@ -47,7 +49,7 @@ function DashSidebar() {
 
   const handleSignout = async () => {
     try {
-      const res = await fetch("/api/user/signout", {
+      const res = await fetch(`${getBaseUrl()}/api/user/signout`, {
         method: "POST",
       });
       const data = await res.json();

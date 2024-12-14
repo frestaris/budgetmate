@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { toast } from "react-toastify";
+import { getBaseUrl } from "../utils/baseUrl";
 
 function AddContact() {
   const { theme } = useSelector((state) => state.theme);
@@ -56,10 +57,11 @@ function AddContact() {
     };
 
     try {
-      const res = await fetch("/api/contact/addcontact", {
+      const res = await fetch(`${getBaseUrl()}/api/contact/addcontact`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(finalData),
+        credentials: "include",
       });
       const data = await res.json();
       if (!res.ok) {

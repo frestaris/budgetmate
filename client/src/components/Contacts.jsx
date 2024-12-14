@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { CiGrid2H, CiGrid41 } from "react-icons/ci";
 import { Spinner } from "flowbite-react";
+import { getBaseUrl } from "../utils/baseUrl";
 
 function Contacts() {
   const { currentUser } = useSelector((state) => state.user);
@@ -26,7 +27,8 @@ function Contacts() {
       setLoading(true);
       try {
         const res = await fetch(
-          `/api/contact/getcontacts?userId=${currentUser._id}`
+          `${getBaseUrl()}/api/contact/getcontacts?userId=${currentUser._id}`,
+          { credentials: "include" }
         );
         const data = await res.json();
         if (res.ok && data.contacts) {

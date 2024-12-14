@@ -15,6 +15,7 @@ import { Button, Select, TextInput } from "flowbite-react";
 
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
+import { getBaseUrl } from "../utils/baseUrl";
 
 function BudgetPlanner() {
   const { currentUser } = useSelector((state) => state.user);
@@ -122,7 +123,9 @@ function BudgetPlanner() {
   useEffect(() => {
     const fetchBudgets = async () => {
       try {
-        const res = await fetch("/api/budgets/getbudgets");
+        const res = await fetch(`${getBaseUrl()}/api/budgets/getbudgets`, {
+          credentials: "include",
+        });
         const data = await res.json();
 
         if (res.ok && data.budgets) {
@@ -158,8 +161,9 @@ function BudgetPlanner() {
     };
 
     try {
-      const response = await fetch("/api/budgets/addbudget", {
+      const response = await fetch(`${getBaseUrl()}/api/budgets/addbudget`, {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -188,12 +192,16 @@ function BudgetPlanner() {
 
   const handleDelete = async (budgetId) => {
     try {
-      const response = await fetch(`/api/budgets/deletebudget/${budgetId}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `${getBaseUrl()}/api/budgets/deletebudget/${budgetId}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       const data = await response.json();
 

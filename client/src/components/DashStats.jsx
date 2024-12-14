@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { getBaseUrl } from "../utils/baseUrl";
 
 const DashStats = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -18,7 +19,9 @@ const DashStats = () => {
   useEffect(() => {
     const fetchBudgets = async () => {
       try {
-        const res = await fetch(`/api/budgets/getbudgets`);
+        const res = await fetch(`${getBaseUrl()}/api/budgets/getbudgets`, {
+          credentials: "include",
+        });
         const data = await res.json();
         console.log(data);
         if (res.ok && data.budgets) {

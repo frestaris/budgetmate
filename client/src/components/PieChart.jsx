@@ -3,6 +3,7 @@ import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { useSelector } from "react-redux";
 import { Spinner } from "flowbite-react";
+import { getBaseUrl } from "../utils/baseUrl";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -16,7 +17,8 @@ const PieChart = () => {
       setLoading(true);
       try {
         const res = await fetch(
-          `/api/contact/getcontacts?userId=${currentUser._id}`
+          `${getBaseUrl()}/api/contact/getcontacts?userId=${currentUser._id}`,
+          { credentials: "include" }
         );
         const data = await res.json();
         if (res.ok && data.contacts) {

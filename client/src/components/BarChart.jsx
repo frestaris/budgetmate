@@ -10,6 +10,7 @@ import {
 } from "chart.js";
 import { useSelector } from "react-redux";
 import { Spinner } from "flowbite-react";
+import { getBaseUrl } from "../utils/baseUrl";
 
 ChartJS.register(BarElement, Tooltip, Legend, CategoryScale, LinearScale);
 
@@ -21,7 +22,9 @@ const BarChart = () => {
   useEffect(() => {
     const fetchBudgets = async () => {
       try {
-        const res = await fetch(`/api/budgets/getbudgets`);
+        const res = await fetch(`${getBaseUrl()}/api/budgets/getbudgets`, {
+          credentials: "include",
+        });
         const data = await res.json();
 
         if (res.ok && data.budgets) {

@@ -23,6 +23,7 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { toast } from "react-toastify";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
+import { getBaseUrl } from "../utils/baseUrl";
 
 function Contact() {
   const { theme } = useSelector((state) => state.theme);
@@ -46,7 +47,12 @@ function Contact() {
     const fetchContact = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/contact/getcontacts?slug=${contactSlug}`);
+        const res = await fetch(
+          `${getBaseUrl()}/api/contact/getcontacts?slug=${contactSlug}`,
+          {
+            credentials: "include",
+          }
+        );
         const data = await res.json();
         if (!res.ok || !data.contacts.length) {
           setError("Contact not found");
@@ -166,13 +172,17 @@ function Contact() {
     };
 
     try {
-      const res = await fetch(`/api/contact/updatecontact/${contact._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedContact),
-      });
+      const res = await fetch(
+        `${getBaseUrl()}/api/contact/updatecontact/${contact._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedContact),
+          credentials: "include",
+        }
+      );
 
       const data = await res.json();
 
@@ -194,9 +204,13 @@ function Contact() {
   const handleDeleteContact = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/contact/deletecontact/${contact._id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `${getBaseUrl()}/api/contact/deletecontact/${contact._id}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
       if (res.ok) {
         toast.success("Contact deleted successfully!");
         navigate("/dashboard?tab=contacts");
