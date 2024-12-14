@@ -92,6 +92,7 @@ function DashProfile() {
     const fileName = new Date().getTime() + imageFile.name;
     const storageRef = ref(storage, fileName);
     const uploadTask = uploadBytesResumable(storageRef, imageFile);
+
     uploadTask.on(
       "state_changed",
       (snapshot) => {
@@ -100,10 +101,24 @@ function DashProfile() {
         setImageFileUploadProgress(progress.toFixed(0));
       },
       (error) => {
-        setImageFileUploadError(
-          "Could not upload image (File must be less than 2MB)"
-        );
-        console.log(error);
+        // Log the full error to inspect what's going wrong
+        console.error("Error uploading image: ", error);
+
+        if (error.code === "storage/unauthorized") {
+          setImageFileUploadError(
+            "User does not have permission to access the object."
+          );
+        } else if (error.code === "storage/canceled") {
+          setImageFileUploadError("User canceled the upload.");
+        } else if (error.code === "storage/unknown") {
+          setImageFileUploadError("An unknown error occurred.");
+        } else {
+          setImageFileUploadError(
+            "Could not upload image (File might be too large or corrupted)."
+          );
+        }
+
+        // Reset state if upload fails
         setImageFileUploadProgress(null);
         setImageFile(null);
         setImageFileUrl(null);

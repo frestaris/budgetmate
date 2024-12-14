@@ -94,7 +94,7 @@ const DashStats = () => {
 
   return (
     <div className="my-5 w-full">
-      <div className="flex flex-col lg:flex-row gap-4 px-4">
+      <div className="flex flex-col sm:flex-row gap-4 px-4">
         <div className="bg-white shadow-md rounded-lg p-6 border border-gray-200 min-h-[150px] flex flex-col justify-between w-full lg:basis-1/2">
           <h2 className="text-xl font-semibold mb-2">Total Earnings</h2>
           <p

@@ -116,7 +116,7 @@ const DoughnutChart = () => {
   }
 
   return (
-    <div className="w-[400px] h-[400px]">
+    <div className="w-[300px] h-[300px] sm:w-[400px] sm:h-[400px]">
       <Doughnut data={getChartData()} options={chartOptions} />
     </div>
   );

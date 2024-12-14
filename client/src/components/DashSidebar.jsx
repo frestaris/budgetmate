@@ -3,7 +3,6 @@ import {
   HiArrowSmRight,
   HiUser,
   HiChartPie,
-  HiUsers,
   HiCurrencyDollar,
 } from "react-icons/hi";
 import { RiContactsBook3Fill } from "react-icons/ri";

@@ -9,8 +9,13 @@ import {
   signInFailure,
 } from "../redux/user/userSlice";
 
+const testData = {
+  email: "test@gmail.com",
+  password: "123456",
+};
+
 function SignIn() {
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState(testData);
   const { loading, error: errorMessage } = useSelector((state) => state.user);
 
   const dispatch = useDispatch();
@@ -43,7 +48,7 @@ function SignIn() {
       if (res.ok) {
         toast.success("User logged in!");
         dispatch(signInSuccess(data));
-        navigate("/dashboard?tab=profile");
+        navigate("/dashboard?tab=dashHome");
       }
     } catch (error) {
       dispatch(signInFailure(error.message));
@@ -70,7 +75,8 @@ function SignIn() {
               <Label value="Your email" />
               <TextInput
                 type="email"
-                placeholder="test@gmail.com for testing"
+                value={formData.email}
+                placeholder="Email"
                 id="email"
                 onChange={handleChange}
               />
@@ -79,7 +85,8 @@ function SignIn() {
               <Label value="Your password" />
               <TextInput
                 type="password"
-                placeholder="123456"
+                value={formData.password}
+                placeholder="******"
                 id="password"
                 onChange={handleChange}
               />
