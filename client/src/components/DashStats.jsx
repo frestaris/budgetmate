@@ -5,6 +5,7 @@ const DashStats = () => {
   const { currentUser } = useSelector((state) => state.user);
   const [userBudgets, setUserBudgets] = useState([]);
   const [totalFrequency, setTotalFrequency] = useState("annually");
+  const { theme } = useSelector((state) => state.theme);
 
   const formattedAmount = (amount) => {
     return new Intl.NumberFormat("en-US", {
@@ -95,7 +96,14 @@ const DashStats = () => {
   return (
     <div className="my-5 w-full">
       <div className="flex flex-col sm:flex-row gap-4 px-4">
-        <div className="bg-white shadow-md rounded-lg p-6 border border-gray-200 min-h-[150px] flex flex-col justify-between w-full lg:basis-1/2">
+        <div
+          className={`${
+            theme === "dark"
+              ? "bg-gray-800 text-gray-100"
+              : "bg-white text-gray-900"
+          } shadow-md rounded-lg p-6 border border-gray-200 min-h-[150px] flex flex-col justify-between w-full lg:basis-1/2`}
+        >
+          {" "}
           <h2 className="text-xl font-semibold mb-2">Total Earnings</h2>
           <p
             className={`text-2xl font-bold ${
@@ -106,7 +114,14 @@ const DashStats = () => {
           </p>
         </div>
 
-        <div className="bg-white shadow-md rounded-lg p-6 border border-gray-200 min-h-[150px] flex flex-col justify-between w-full lg:basis-1/2">
+        <div
+          className={`${
+            theme === "dark"
+              ? "bg-gray-800 text-gray-100"
+              : "bg-white text-gray-900"
+          } shadow-md rounded-lg p-6 border border-gray-200 min-h-[150px] flex flex-col justify-between w-full lg:basis-1/2`}
+        >
+          {" "}
           <h2 className="text-xl font-semibold mb-2">Total Contacts</h2>
           <p className="text-2xl font-bold">{currentUser.contacts.length}</p>
         </div>
