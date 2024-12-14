@@ -21,7 +21,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["https://frontend", "http://localhost:5173"],
+    origin: ["https://budgetmate-frontend.vercel.app"],
     credentials: true,
   })
 );
