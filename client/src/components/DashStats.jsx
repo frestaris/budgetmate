@@ -126,13 +126,15 @@ const DashStats = () => {
           } shadow-md rounded-lg p-6 border border-gray-200 min-h-[150px] flex flex-col justify-between w-full lg:basis-1/2`}
         >
           {" "}
-          <h2 className="text-xl font-semibold mb-2">Total Earnings</h2>
+          <h2 className="text-xl font-semibold mb-2">
+            Total Earnings annually
+          </h2>
           <p
             className={`text-2xl font-bold ${
               totalAmount >= 0 ? "text-green-500" : "text-red-500"
             }`}
           >
-            ${formattedAmount(totalAmount.toFixed(2))} p/a
+            ${formattedAmount(totalAmount.toFixed(2))}
           </p>
         </div>
 
