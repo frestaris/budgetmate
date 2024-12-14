@@ -4,8 +4,10 @@ import { getBaseUrl } from "../utils/baseUrl";
 
 const DashStats = () => {
   const { currentUser } = useSelector((state) => state.user);
+  const [contacts, setContacts] = useState([]);
   const [userBudgets, setUserBudgets] = useState([]);
   const [totalFrequency, setTotalFrequency] = useState("annually");
+
   const { theme } = useSelector((state) => state.theme);
 
   const formattedAmount = (amount) => {
@@ -23,7 +25,6 @@ const DashStats = () => {
           credentials: "include",
         });
         const data = await res.json();
-        console.log(data);
         if (res.ok && data.budgets) {
           setUserBudgets(data.budgets);
         }
@@ -35,6 +36,24 @@ const DashStats = () => {
     if (currentUser?._id) {
       fetchBudgets();
     }
+  }, [currentUser._id]);
+
+  useEffect(() => {
+    const fetchContacts = async () => {
+      try {
+        const res = await fetch(
+          `${getBaseUrl()}/api/contact/getcontacts?userId=${currentUser._id}`,
+          { credentials: "include" }
+        );
+        const data = await res.json();
+        if (res.ok && data.contacts) {
+          setContacts(data.contacts);
+        }
+      } catch (error) {
+        console.log("Error fetching contacts:", error);
+      }
+    };
+    fetchContacts();
   }, [currentUser._id]);
 
   const convertAmountByFrequency = (
@@ -126,7 +145,7 @@ const DashStats = () => {
         >
           {" "}
           <h2 className="text-xl font-semibold mb-2">Total Contacts</h2>
-          <p className="text-2xl font-bold">{currentUser.contacts.length}</p>
+          <p className="text-2xl font-bold">{contacts.length}</p>
         </div>
       </div>
     </div>
