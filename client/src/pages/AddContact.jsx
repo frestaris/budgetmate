@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { toast } from "react-toastify";
+import { getBaseUrl } from "../utils/baseUrl";
 
 function AddContact() {
   const { theme } = useSelector((state) => state.theme);
@@ -56,10 +57,11 @@ function AddContact() {
     };
 
     try {
-      const res = await fetch("/api/contact/addcontact", {
+      const res = await fetch(`${getBaseUrl()}/api/contact/addcontact`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(finalData),
+        credentials: "include",
       });
       const data = await res.json();
       if (!res.ok) {
@@ -180,7 +182,7 @@ function AddContact() {
         )}
         <TextInput
           type="text"
-          placeholder="Name"
+          placeholder="Name (required)"
           required
           id="name"
           className="flex-1"
@@ -199,13 +201,12 @@ function AddContact() {
               ? "dark:text-gray-200 dark:bg-[rgb(16,23,42)]"
               : "text-gray-700 bg-white"
           }`}
-          country={"au"}
           value={phone}
           onChange={(value) => {
             handlePhoneChange(value);
             setFormData({ ...formData, phone: value });
           }}
-          placeholder="Phone"
+          placeholder="Phone (required)"
           id="phone"
           required
           inputStyle={{
@@ -238,11 +239,10 @@ function AddContact() {
           }
         >
           <option value="friend">Friend</option>
-          <option value="father">Father</option>
-          <option value="mother">Mother</option>
-          <option value="sibling">Sibling</option>
-          <option value="cousin">Cousin</option>
-          <option value="grandparent">Grandparent</option>
+          <option value="relative">Relative</option>
+          <option value="spouse">Spouse</option>
+          <option value="colleague">Colleague</option>
+          <option value="business">Business</option>
         </Select>
 
         <Button type="submit" gradientDuoTone="cyanToBlue" disabled={loading}>

@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 const contactSchema = new mongoose.Schema(
   {
     userId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
     name: { type: String, required: true },

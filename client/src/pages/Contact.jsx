@@ -23,6 +23,7 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { toast } from "react-toastify";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
+import { getBaseUrl } from "../utils/baseUrl";
 
 function Contact() {
   const { theme } = useSelector((state) => state.theme);
@@ -46,7 +47,12 @@ function Contact() {
     const fetchContact = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/contact/getcontacts?slug=${contactSlug}`);
+        const res = await fetch(
+          `${getBaseUrl()}/api/contact/getcontacts?slug=${contactSlug}`,
+          {
+            credentials: "include",
+          }
+        );
         const data = await res.json();
         if (!res.ok || !data.contacts.length) {
           setError("Contact not found");
@@ -166,13 +172,17 @@ function Contact() {
     };
 
     try {
-      const res = await fetch(`/api/contact/updatecontact/${contact._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedContact),
-      });
+      const res = await fetch(
+        `${getBaseUrl()}/api/contact/updatecontact/${contact._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedContact),
+          credentials: "include",
+        }
+      );
 
       const data = await res.json();
 
@@ -194,9 +204,13 @@ function Contact() {
   const handleDeleteContact = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/contact/deletecontact/${contact._id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `${getBaseUrl()}/api/contact/deletecontact/${contact._id}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
       if (res.ok) {
         toast.success("Contact deleted successfully!");
         navigate("/dashboard?tab=contacts");
@@ -347,11 +361,10 @@ function Contact() {
           }
         >
           <option value="friend">Friend</option>
-          <option value="father">Father</option>
-          <option value="mother">Mother</option>
-          <option value="sibling">Sibling</option>
-          <option value="cousin">Cousin</option>
-          <option value="grandparent">Grandparent</option>
+          <option value="relative">Relative</option>
+          <option value="spouse">Spouse</option>
+          <option value="colleague">Colleague</option>
+          <option value="business">Business</option>
         </Select>
 
         <Button
@@ -371,7 +384,7 @@ function Contact() {
           setShowModal(true);
         }}
       >
-        Delete Account
+        Delete Contact
       </Button>
       <Modal
         show={showModal}
@@ -384,7 +397,7 @@ function Contact() {
           <div className="text-center">
             <HiOutlineExclamationCircle className="h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto" />
             <h3 className="mb-5 text-lg text-gray-500 dark:text-gray-400">
-              Are you sure you want to delete your account?
+              Are you sure you want to delete this contact?
             </h3>
             <div className="flex justify-center gap-4">
               <Button color="failure" onClick={handleDeleteContact}>

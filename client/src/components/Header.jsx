@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { toggleTheme } from "../redux/theme/themeSlice";
 import { useSidebar } from "../contexts/SidebarContext";
 import { signoutSuccess } from "../redux/user/userSlice";
+import { getBaseUrl } from "../utils/baseUrl";
 
 function Header() {
   const { currentUser } = useSelector((state) => state.user);
@@ -18,7 +19,7 @@ function Header() {
 
   const handleSignout = async () => {
     try {
-      const res = await fetch("/api/user/signout", {
+      const res = await fetch(`${getBaseUrl()}/api/user/signout`, {
         method: "POST",
       });
       const data = await res.json();
@@ -52,7 +53,7 @@ function Header() {
           pill
           onClick={() => dispatch(toggleTheme())}
         >
-          {theme === "light" ? <FaSun /> : <FaMoon />}
+          {theme === "dark" ? <FaMoon /> : <FaSun />}
         </Button>
         {currentUser ? (
           <>

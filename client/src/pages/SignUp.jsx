@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
+import { getBaseUrl } from "../utils/baseUrl";
 
 function SignUp() {
   const [formData, setFormData] = useState({});
@@ -22,7 +23,7 @@ function SignUp() {
     try {
       setLoading(true);
       setErrorMessage(null);
-      const res = await fetch("/api/auth/signup", {
+      const res = await fetch(`${getBaseUrl()}/api/auth/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

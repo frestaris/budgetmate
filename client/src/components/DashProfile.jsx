@@ -20,6 +20,7 @@ import { app } from "../firebase";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { toast } from "react-toastify";
+import { getBaseUrl } from "../utils/baseUrl";
 
 function DashProfile() {
   const { currentUser, loading } = useSelector((state) => state.user);
@@ -51,13 +52,17 @@ function DashProfile() {
     }
     try {
       dispatch(updateStart());
-      const res = await fetch(`/api/user/update/${currentUser._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const res = await fetch(
+        `${getBaseUrl()}/api/user/update/${currentUser._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+          credentials: "include",
+        }
+      );
       const data = await res.json();
       if (!res.ok) {
         dispatch(updateFailure(data.message));
@@ -92,6 +97,7 @@ function DashProfile() {
     const fileName = new Date().getTime() + imageFile.name;
     const storageRef = ref(storage, fileName);
     const uploadTask = uploadBytesResumable(storageRef, imageFile);
+
     uploadTask.on(
       "state_changed",
       (snapshot) => {
@@ -100,10 +106,24 @@ function DashProfile() {
         setImageFileUploadProgress(progress.toFixed(0));
       },
       (error) => {
-        setImageFileUploadError(
-          "Could not upload image (File must be less than 2MB)"
-        );
-        console.log(error);
+        // Log the full error to inspect what's going wrong
+        console.error("Error uploading image: ", error);
+
+        if (error.code === "storage/unauthorized") {
+          setImageFileUploadError(
+            "User does not have permission to access the object."
+          );
+        } else if (error.code === "storage/canceled") {
+          setImageFileUploadError("User canceled the upload.");
+        } else if (error.code === "storage/unknown") {
+          setImageFileUploadError("An unknown error occurred.");
+        } else {
+          setImageFileUploadError(
+            "Could not upload image (File might be too large or corrupted)."
+          );
+        }
+
+        // Reset state if upload fails
         setImageFileUploadProgress(null);
         setImageFile(null);
         setImageFileUrl(null);
@@ -124,9 +144,13 @@ function DashProfile() {
     setShowModal(false);
     try {
       dispatch(deleteUserStart());
-      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `${getBaseUrl()}/api/user/delete/${currentUser._id}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
       const data = await res.json();
       if (!res.ok) {
         dispatch(deleteUserFailure(data.message));

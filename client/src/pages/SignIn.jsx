@@ -8,9 +8,15 @@ import {
   signInSuccess,
   signInFailure,
 } from "../redux/user/userSlice";
+import { getBaseUrl } from "../utils/baseUrl";
+
+const testData = {
+  email: "test@gmail.com",
+  password: "123456",
+};
 
 function SignIn() {
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState(testData);
   const { loading, error: errorMessage } = useSelector((state) => state.user);
 
   const dispatch = useDispatch();
@@ -18,6 +24,9 @@ function SignIn() {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
+    if (errorMessage) {
+      dispatch(signInFailure(null));
+    }
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,12 +35,13 @@ function SignIn() {
     }
     try {
       dispatch(signInStart());
-      const res = await fetch("/api/auth/signin", {
+      const res = await fetch(`${getBaseUrl()}/api/auth/signin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
+        credentials: "include",
       });
       const data = await res.json();
       if (data.success === false) {
@@ -40,7 +50,7 @@ function SignIn() {
       if (res.ok) {
         toast.success("User logged in!");
         dispatch(signInSuccess(data));
-        navigate("/");
+        navigate("/dashboard?tab=dashHome");
       }
     } catch (error) {
       dispatch(signInFailure(error.message));
@@ -67,7 +77,8 @@ function SignIn() {
               <Label value="Your email" />
               <TextInput
                 type="email"
-                placeholder="name@email.com"
+                value={formData.email}
+                placeholder="Email"
                 id="email"
                 onChange={handleChange}
               />
@@ -76,7 +87,8 @@ function SignIn() {
               <Label value="Your password" />
               <TextInput
                 type="password"
-                placeholder="********"
+                value={formData.password}
+                placeholder="******"
                 id="password"
                 onChange={handleChange}
               />

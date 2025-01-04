@@ -7,10 +7,11 @@ const userSchema = new mongoose.Schema(
     password: { type: String, required: true },
     contacts: [
       {
-        contact_id: { type: mongoose.Schema.Types.ObjectId, ref: "Contact" },
-        relationship: { type: String },
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Contact",
       },
     ],
+    budgets: [{ type: mongoose.Schema.Types.ObjectId, ref: "Budget" }],
     profilePicture: {
       type: String,
       default:

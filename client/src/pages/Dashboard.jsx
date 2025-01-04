@@ -4,6 +4,7 @@ import DashSidebar from "../components/DashSidebar";
 import DashProfile from "../components/DashProfile";
 import DashHome from "../components/DashHome";
 import Contacts from "../components/Contacts";
+import BudgetPlanner from "../components/BudgetPlanner";
 
 function Dashboard() {
   const location = useLocation();
@@ -25,6 +26,7 @@ function Dashboard() {
       {tab === "profile" && <DashProfile />}
       {tab === "dashHome" && <DashHome />}
       {tab === "contacts" && <Contacts />}
+      {tab === "budgetPlanner" && <BudgetPlanner />}
     </div>
   );
 }

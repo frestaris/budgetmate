@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { CiGrid2H, CiGrid41 } from "react-icons/ci";
+import { Spinner } from "flowbite-react";
+import { getBaseUrl } from "../utils/baseUrl";
 
 function Contacts() {
   const { currentUser } = useSelector((state) => state.user);
@@ -9,6 +11,7 @@ function Contacts() {
   const [originalContacts, setOriginalContacts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState("column");
+  const [loading, setLoading] = useState(true);
 
   const backgroundColors = [
     "bg-red-500",
@@ -21,16 +24,20 @@ function Contacts() {
 
   useEffect(() => {
     const fetchContacts = async () => {
+      setLoading(true);
       try {
         const res = await fetch(
-          `/api/contact/getcontacts?userId=${currentUser._id}`
+          `${getBaseUrl()}/api/contact/getcontacts?userId=${currentUser._id}`,
+          { credentials: "include" }
         );
         const data = await res.json();
         if (res.ok && data.contacts) {
           setUserContacts(data.contacts);
           setOriginalContacts(data.contacts);
         }
+        setLoading(false);
       } catch (error) {
+        setLoading(false);
         console.log("Error fetching contacts:", error);
       }
     };
@@ -60,6 +67,22 @@ function Contacts() {
   const toggleViewMode = () => {
     setViewMode((prevMode) => (prevMode === "grid" ? "column" : "grid"));
   };
+
+  if (loading) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          width: "100%",
+        }}
+      >
+        <Spinner className="size-24" />
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 w-full">
@@ -121,7 +144,7 @@ function Contacts() {
                       {contact.name.charAt(0).toUpperCase()}
                     </div>
                   )}
-                  <span className="truncate w-[80px]">
+                  <span className="truncate w-[80px] text-gray-900 dark:text-gray-300">
                     {contact.name.charAt(0).toUpperCase() +
                       contact.name.slice(1).toLowerCase()}
                   </span>
@@ -136,7 +159,7 @@ function Contacts() {
           ))}
         </div>
       ) : (
-        <p>You have no contacts yet!</p>
+        <p>Nothing to see here!</p>
       )}
     </div>
   );

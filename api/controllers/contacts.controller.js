@@ -24,10 +24,7 @@ export const add = async (req, res, next) => {
     const savedContact = await newContact.save();
     const user = await User.findById(req.user.id);
     if (user) {
-      user.contacts.push({
-        contact_id: savedContact._id,
-        relationship: req.body.relationship || "friend",
-      });
+      user.contacts.push(savedContact._id);
       await user.save();
     }
     res.status(201).json(savedContact);
@@ -41,7 +38,7 @@ export const getContacts = async (req, res, next) => {
   try {
     const query = {
       ...(req.query.userId && { userId: req.query.userId }),
-      ...(req.query.friendship && { friendship: req.query.friendship }),
+      ...(req.query.relationship && { relationship: req.query.relationship }),
       ...(req.query.slug && { slug: req.query.slug }),
       ...(req.query.contactId && { _id: req.query.contactId }),
       ...(req.query.searchTerm && {
