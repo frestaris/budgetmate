@@ -120,14 +120,17 @@ function BudgetPlanner() {
 
     return totalIncome - totalExpenses;
   };
+
   useEffect(() => {
     const fetchBudgets = async () => {
       try {
-        const res = await fetch(`${getBaseUrl()}/api/budgets/getbudgets`, {
-          credentials: "include",
-        });
+        const res = await fetch(
+          `${getBaseUrl()}/api/budgets/getbudgets?userId=${currentUser._id}`, // Add userId to the URL
+          {
+            credentials: "include",
+          }
+        );
         const data = await res.json();
-
         if (res.ok && data.budgets) {
           setUserBudgets(data.budgets);
         }
@@ -135,7 +138,10 @@ function BudgetPlanner() {
         console.log("Error fetching budgets:", error);
       }
     };
-    fetchBudgets();
+
+    if (currentUser?._id) {
+      fetchBudgets();
+    }
   }, [currentUser._id]);
 
   const handleSubmit = async (e) => {

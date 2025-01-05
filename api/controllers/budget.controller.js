@@ -34,8 +34,9 @@ export const addBudget = async (req, res, next) => {
 };
 
 export const getBudgets = async (req, res) => {
+  const { userId } = req.query;
   try {
-    const budgets = await Budget.find({ userId: req.user.id });
+    const budgets = await Budget.find({ userId });
     res.status(200).json({ budgets });
   } catch (error) {
     console.error("Error fetching budgets:", error);

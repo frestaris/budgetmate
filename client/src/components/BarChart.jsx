@@ -21,10 +21,15 @@ const BarChart = () => {
 
   useEffect(() => {
     const fetchBudgets = async () => {
+      setLoading(true);
+
       try {
-        const res = await fetch(`${getBaseUrl()}/api/budgets/getbudgets`, {
-          credentials: "include",
-        });
+        const res = await fetch(
+          `${getBaseUrl()}/api/budgets/getbudgets?userId=${currentUser._id}`, // Add userId to the URL
+          {
+            credentials: "include",
+          }
+        );
         const data = await res.json();
 
         if (res.ok && data.budgets) {

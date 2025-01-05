@@ -11,8 +11,6 @@ export const verifyToken = (req, res, next) => {
     const token = req.cookies.access_token;
     if (!JWT_SECRET) {
       console.error("JWT_SECRET is not defined");
-    } else {
-      console.log("JWT_SECRET_KEY loaded successfully");
     }
     if (!token) {
       return next(errorHandler(401, "Unauthorized - No Token Provided"));

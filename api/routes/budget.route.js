@@ -9,7 +9,7 @@ import { verifyToken } from "../utils/verifyUser.js";
 const router = express.Router();
 
 router.post("/addbudget", verifyToken, addBudget);
-router.get("/getbudgets", verifyToken, getBudgets);
+router.get("/getbudgets", getBudgets);
 router.delete("/deletebudget/:budgetId", verifyToken, deleteBudget);
 
 export default router;
